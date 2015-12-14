@@ -4,6 +4,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import copy
+import threading
 
 from ...extern.six.moves import xmlrpc_client as xmlrpc
 
@@ -235,13 +236,23 @@ class SAMPHubProxy(object):
         """
         Proxy to ``call`` SAMP Hub method.
         """
-        return self._samp_hub.call(private_key, recipient_id, msg_tag, message)
+        #return self._samp_hub.call(private_key, recipient_id, msg_tag, message)
+        mythread = threading.Thread(
+            target = lambda : self._samp_hub.call(private_key, recipient_id, msg_tag, message)
+        )
+        mythread.start()
+        return ""
 
     def call_all(self, private_key, msg_tag, message):
         """
         Proxy to ``callAll`` SAMP Hub method.
         """
-        return self._samp_hub.callAll(private_key, msg_tag, message)
+        #return self._samp_hub.callAll(private_key, msg_tag, message)
+        mythread = threading.Thread(
+            target = lambda : self._samp_hub.callAll(private_key, msg_tag, message)
+        )
+        mythread.start()
+        return {}
 
     def call_and_wait(self, private_key, recipient_id, message, timeout):
         """

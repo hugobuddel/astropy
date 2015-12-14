@@ -108,6 +108,7 @@ class SAMPMsgReplierWrapper(object):
 
     def __call__(self, f):
 
+
         def wrapped_f(*args):
 
             if get_num_args(f) == 5 or args[2] is None:  # notification

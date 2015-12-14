@@ -165,6 +165,8 @@ class SAMPClient(object):
             self.client.register_function(self.receive_notification, 'samp.client.receiveNotification')
             self.client.register_function(self.receive_call, 'samp.client.receiveCall')
             self.client.register_function(self.receive_response, 'samp.client.receiveResponse')
+            self.client.other_thread = self
+
 
             # If the port was set to zero, then the operating system has
             # selected a free port. We now check what this port number is.
@@ -369,6 +371,14 @@ class SAMPClient(object):
             Any confirmation string.
         """
         return self._handle_call(private_key, sender_id, msg_id, message)
+        mythread = threading.Thread(
+            target=lambda : self._handle_call(private_key, sender_id, msg_id, message)
+        )
+        #mythread.daemon = True
+        mythread.start()
+        
+        return ""
+        #return self.other_thread._handle_call(private_key, sender_id, msg_id, message)
 
     def _handle_response(self, private_key, responder_id, msg_tag, response):
         if (private_key == self.get_private_key() and
